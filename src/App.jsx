@@ -8,6 +8,7 @@ function App() {
 
   async function getWeather() {
     setLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 2000))
     let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${import.meta.env.VITE_WEATHER_KEY}&units=metric`)
     let data = await response.json()
     if (data.cod === "404") {
@@ -29,7 +30,9 @@ function App() {
             value={city}
             onChange={(e) => setCity(e.target.value)}
         />
-        <button onClick={getWeather}>Search</button>
+        <button onClick={getWeather} disabled={loading}>
+            {loading ? "loading..." : "search"}
+            </button>
         {weather && (
             <div>
                 <h2>{weather.name}</h2>
