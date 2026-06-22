@@ -4,14 +4,21 @@ function App() {
   let [city, setCity] = useState("")
   let [weather, setWeather] = useState(null)
   let [loading, setLoading] = useState(false)
+  let [error, setError] = useState("")
 
   async function getWeather() {
     setLoading(true)
-    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=912b391751e19784d6353aab9a208e59&units=metric`)
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${import.meta.env.VITE_WEATHER_KEY}&units=metric`)
     let data = await response.json()
+    if (data.cod === "404") {
+    setError("City not found")
+    setWeather(null)
+    } else {
+    setError("")
     setWeather(data)
+    }
     setLoading(false)
-  }
+    }
 
     return (
     <div>
@@ -30,6 +37,7 @@ function App() {
                 <p>{weather.weather[0].description}</p>
             </div>
         )}
+        {error && <p style={{color: "red"}}>{error}</p>}
     </div>
 )
 }
